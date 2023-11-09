@@ -8,6 +8,8 @@ import 'package:retrolauncher/ApplicationBrain.dart';
 import 'package:retrolauncher/Setting.dart';
 import 'package:retrolauncher/SettingsUi.dart';
 import 'package:retrolauncher/TimerBrain.dart';
+import 'package:retrolauncher/pages/Calculator.dart';
+import 'package:retrolauncher/pages/TodoList.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     Provider.of<TimerBrain>(context, listen: false).currentTime();
     Provider.of<ApplicationBrain>(context, listen: false).initApp();
+
     super.initState();
   }
 
@@ -30,7 +33,28 @@ class _HomeScreenState extends State<HomeScreen> {
     double kh = MediaQuery.of(context).size.height;
     double kw = MediaQuery.of(context).size.width;
     return PageView(
+      physics: CustomPageViewScrollPhysics(),
       children: [
+        SafeArea(
+          child: Container(
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              children: [
+                Container(
+                    margin: EdgeInsets.all(15),
+                    padding: EdgeInsets.all(20),
+                    height: MediaQuery.of(context).size.height / 2.5,
+                    decoration: BoxDecoration(
+                        color: Provider.of<SettingBrain>(context)
+                            .todolistBackground,
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                    child: PageView(
+                      children: [ToDoList(), Calculator()],
+                    ))
+              ],
+            ),
+          ),
+        ),
         HomePageView(context, kh, kw),
         GestureDetector(
           onLongPress: () {
@@ -170,36 +194,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: SizedBox(
                 height: kh / 2,
                 width: kw / 1.5,
-                child: ListView.builder(
-                    itemCount:
-                        Provider.of<ApplicationBrain>(context).apps.length > 5
-                            ? 8
-                            : Provider.of<ApplicationBrain>(context)
-                                .apps
-                                .length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        // color: Colors.red,
-                        margin: EdgeInsets.all(kh / 100),
-                        child: GestureDetector(
-                          onTap: () {
-                            Provider.of<ApplicationBrain>(context,
-                                    listen: false)
-                                .appOpen(index, 1);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CustomAppicon(kh, context, index),
-                              SizedBox(
-                                width: kw / 20,
-                              ),
-                              CustomAppname(context, index, kh),
-                            ],
-                          ),
-                        ),
-                      );
-                    }),
+                child: Provider.of<SettingBrain>(context).grid
+                    ? GridviewDisplay(context, kh, kw)
+                    : ListviewDisplay(context, kh, kw),
               ),
             ),
             SizedBox(
@@ -211,6 +208,68 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  GridView GridviewDisplay(BuildContext context, double kh, double kw) {
+    return GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3, // number of items in each row
+          mainAxisSpacing: 30.0, // spacing between rows
+          crossAxisSpacing: 8.0, // spacing between columns
+        ),
+        itemCount: Provider.of<ApplicationBrain>(context).apps.length > 5
+            ? 9
+            : Provider.of<ApplicationBrain>(context).apps.length,
+        itemBuilder: (context, index) {
+          return Container(
+            child: GestureDetector(
+              onTap: () {
+                Provider.of<ApplicationBrain>(context, listen: false)
+                    .appOpen(index, 1);
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomAppiconGridView(kh, context, index),
+                  SizedBox(
+                    width: kw / 20,
+                  ),
+                  CustomAppnameGridView(context, index, kh),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  ListView ListviewDisplay(BuildContext context, double kh, double kw) {
+    return ListView.builder(
+        itemCount: Provider.of<ApplicationBrain>(context).apps.length > 5
+            ? 8
+            : Provider.of<ApplicationBrain>(context).apps.length,
+        itemBuilder: (context, index) {
+          return Container(
+            // color: Colors.red,
+            margin: EdgeInsets.all(kh / 100),
+            child: GestureDetector(
+              onTap: () {
+                Provider.of<ApplicationBrain>(context, listen: false)
+                    .appOpen(index, 1);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CustomAppicon(kh, context, index),
+                  SizedBox(
+                    width: kw / 20,
+                  ),
+                  CustomAppname(context, index, kh),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   Container customTimeWidget(double kw, double kh, BuildContext context) {
     return Container(
       width: kw,
@@ -219,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Text(
           Provider.of<TimerBrain>(context).timeString,
           style: GoogleFonts.poppins(
-              fontSize: kh / 30,
+              fontSize: kh / 40,
               fontWeight: FontWeight.w500,
               color: Provider.of<SettingBrain>(context).textColour),
         ),
@@ -259,4 +318,56 @@ Container CustomAppicon(double kh, BuildContext context, int index) {
       ),
     ),
   );
+}
+
+Container CustomAppiconGridView(double kh, BuildContext context, int index) {
+  return Container(
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(150)),
+        color: Provider.of<SettingBrain>(context).textColour),
+    padding: EdgeInsets.all(kh / 200),
+    child: ClipRRect(
+      borderRadius: BorderRadius.all(Radius.circular(50)),
+      child: Image.memory(
+        Provider.of<ApplicationBrain>(context).apps[index]
+                is ApplicationWithIcon
+            ? Provider.of<ApplicationBrain>(context).apps[index].icon
+            : null,
+        height: kh / 20,
+        gaplessPlayback: true,
+      ),
+    ),
+  );
+}
+
+Container CustomAppnameGridView(BuildContext context, int index, double kh) {
+  return Container(
+    width: kh / 5,
+    child: Text(
+      Provider.of<ApplicationBrain>(context).apps[index].appName,
+      overflow: TextOverflow.fade,
+      maxLines: 1,
+      style: GoogleFonts.poppins(
+          fontSize: kh / 65,
+          color: Provider.of<SettingBrain>(context).textColour),
+    ),
+    alignment: Alignment.center,
+  );
+}
+
+class CustomPageViewScrollPhysics extends ScrollPhysics {
+  const CustomPageViewScrollPhysics({ScrollPhysics? parent})
+      : super(parent: parent);
+
+  @override
+  CustomPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return CustomPageViewScrollPhysics(parent: buildParent(ancestor)!);
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+        mass: 80,
+        stiffness: 100,
+        damping: 1,
+      );
 }

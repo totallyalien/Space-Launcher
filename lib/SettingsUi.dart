@@ -44,6 +44,18 @@ class _SettingPageState extends State<SettingPage> {
                 print(value);
                 Provider.of<SettingBrain>(context, listen: false).changeMode();
               },
+            ),
+            SwitchListTile(
+              title: Text(
+                "GridView",
+                style: GoogleFonts.poppins(
+                    color: Provider.of<SettingBrain>(context).textColour),
+              ),
+              value: Provider.of<SettingBrain>(context).grid,
+              onChanged: (value) {
+                print(value);
+                Provider.of<SettingBrain>(context, listen: false).GridMode();
+              },
             )
           ],
         ),
