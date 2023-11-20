@@ -81,7 +81,10 @@ class _ToDoListState extends State<ToDoList> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Provider.of<SettingBrain>(context).todolist_button,
         onPressed: createNewTask,
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Provider.of<SettingBrain>(context).todolistBackground,
+        ),
       ),
       body: ListView.builder(
         itemCount: db.toDoList.length,

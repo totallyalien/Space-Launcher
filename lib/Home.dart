@@ -10,6 +10,7 @@ import 'package:retrolauncher/SettingsUi.dart';
 import 'package:retrolauncher/TimerBrain.dart';
 import 'package:retrolauncher/pages/Calculator.dart';
 import 'package:retrolauncher/pages/TodoList.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -32,125 +33,181 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     double kh = MediaQuery.of(context).size.height;
     double kw = MediaQuery.of(context).size.width;
-    return PageView(
-      physics: CustomPageViewScrollPhysics(),
-      children: [
-        SafeArea(
-          child: Container(
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-              children: [
-                Container(
-                    margin: EdgeInsets.all(15),
-                    padding: EdgeInsets.all(20),
-                    height: MediaQuery.of(context).size.height / 2.5,
-                    decoration: BoxDecoration(
-                        color: Provider.of<SettingBrain>(context)
-                            .todolistBackground,
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                    child: PageView(
-                      children: [ToDoList(), Calculator()],
-                    ))
-              ],
-            ),
-          ),
-        ),
-        HomePageView(context, kh, kw),
-        GestureDetector(
-          onLongPress: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => SettingPage()));
-          },
-          child: Scaffold(
-            backgroundColor: Provider.of<SettingBrain>(context).appColour,
-            body: Container(
-              height: kh,
-              width: kw,
+    return SafeArea(
+      maintainBottomViewPadding: true,
+      child: PageView(
+        physics: CustomPageViewScrollPhysics(),
+        children: [
+          SafeArea(
+            child: Container(
+              height: MediaQuery.of(context).size.height,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: CustomSearchBox(context),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: Provider.of<ApplicationBrain>(context)
-                            .search_apps
-                            .length,
-                        itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.all(kh / 100),
-                            child: GestureDetector(
-                              onTap: () {
-                                Provider.of<ApplicationBrain>(context,
-                                        listen: false)
-                                    .appOpen(index, 2);
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(150)),
-                                        color:
-                                            Provider.of<SettingBrain>(context)
-                                                .textColour),
-                                    padding: EdgeInsets.all(kh / 200),
-                                    child: ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(50)),
-                                      child: Image.memory(
-                                        Provider.of<ApplicationBrain>(context)
-                                                    .search_apps[index]
-                                                is ApplicationWithIcon
-                                            ? Provider.of<ApplicationBrain>(
-                                                    context)
-                                                .search_apps[index]
-                                                .icon
-                                            : null,
-                                        height: kh / 40,
-                                        gaplessPlayback: true,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: kw / 20,
-                                  ),
-                                  Container(
-                                    width: kh / 5,
-                                    child: Text(
-                                      Provider.of<ApplicationBrain>(context)
-                                          .search_apps[index]
-                                          .appName,
-                                      overflow: TextOverflow.fade,
-                                      style: GoogleFonts.poppins(
-                                          fontSize: kh / 55,
-                                          color:
-                                              Provider.of<SettingBrain>(context)
-                                                  .textColour),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                  Container(
+                      margin: EdgeInsets.all(15),
+                      padding: EdgeInsets.all(20),
+                      height: MediaQuery.of(context).size.height / 2.5,
+                      decoration: BoxDecoration(
+                          color: Provider.of<SettingBrain>(context)
+                              .todolistBackground,
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      child: PageView(
+                        children: [
+                          ToDoList(),
+                          Calculator(),
+                        ],
+                      )),
+                  Container(
+                      margin: EdgeInsets.all(5),
+                      padding: EdgeInsets.all(10),
+                      height: MediaQuery.of(context).size.height / 2.5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              child: LocalMusicPlayer(),
+                              decoration: BoxDecoration(
+                                  color: Provider.of<SettingBrain>(context)
+                                      .todolistBackground,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
                             ),
-                          );
-                        }),
-                  ),
-                  SizedBox(
-                    height: kh / 20,
-                  ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width / 50,
+                          ),
+                          Expanded(
+                            child: Container(
+                              child: LocalContactWidget(),
+                              // height: MediaQuery.of(context).size.height,
+                              // width: MediaQuery.of(context).size.width / 3,
+                              decoration: BoxDecoration(
+                                  color: Provider.of<SettingBrain>(context)
+                                      .todolistBackground,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width / 50,
+                          ),
+                          Expanded(
+                            child: Container(
+                              // height: MediaQuery.of(context).size.height,
+                              // width: MediaQuery.of(context).size.width / 3,
+                              decoration: BoxDecoration(
+                                  color: Provider.of<SettingBrain>(context)
+                                      .todolistBackground,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
+                            ),
+                          )
+                        ],
+                      ))
                 ],
               ),
             ),
           ),
-        )
-      ],
+          HomePageView(context, kh, kw),
+          GestureDetector(
+            onLongPress: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SettingPage()));
+            },
+            child: Scaffold(
+              backgroundColor: Provider.of<SettingBrain>(context).appColour,
+              body: Container(
+                height: kh,
+                width: kw,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: CustomSearchBox(context),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: Provider.of<ApplicationBrain>(context)
+                              .search_apps
+                              .length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.all(kh / 100),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Provider.of<ApplicationBrain>(context,
+                                          listen: false)
+                                      .appOpen(index, 2);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(150)),
+                                          color:
+                                              Provider.of<SettingBrain>(context)
+                                                  .textColour),
+                                      padding: EdgeInsets.all(kh / 200),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(50)),
+                                        child: Image.memory(
+                                          Provider.of<ApplicationBrain>(context)
+                                                      .search_apps[index]
+                                                  is ApplicationWithIcon
+                                              ? Provider.of<ApplicationBrain>(
+                                                      context)
+                                                  .search_apps[index]
+                                                  .icon
+                                              : null,
+                                          height: kh / 40,
+                                          gaplessPlayback: true,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: kw / 20,
+                                    ),
+                                    Container(
+                                      width: kh / 5,
+                                      child: Text(
+                                        Provider.of<ApplicationBrain>(context)
+                                            .search_apps[index]
+                                            .appName,
+                                        overflow: TextOverflow.fade,
+                                        style: GoogleFonts.poppins(
+                                            fontSize: kh / 55,
+                                            color: Provider.of<SettingBrain>(
+                                                    context)
+                                                .textColour),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                    SizedBox(
+                      height: kh / 20,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 
@@ -188,6 +245,14 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             SizedBox(
               height: kh / 20,
+            ),
+            GestureDetector(
+              onTap: () {
+                Provider.of<SettingBrain>(context, listen: false).fcover();
+              },
+              child: SvgPicture.asset(
+                  "assets/pt${Provider.of<SettingBrain>(context, listen: true).imgTile}.svg",
+                  width: MediaQuery.of(context).size.width / 1.5),
             ),
             customTimeWidget(kw, kh, context),
             Center(
@@ -296,6 +361,102 @@ class _HomeScreenState extends State<HomeScreen> {
             fontSize: kh / 55,
             color: Provider.of<SettingBrain>(context).textColour),
       ),
+    );
+  }
+}
+
+class LocalContactWidget extends StatelessWidget {
+  const LocalContactWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment:
+          MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(30))),
+        ),
+        Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(30))),
+        ),
+        Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(30))),
+        ),
+        Container(
+          height: 50,
+          width: 50,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                  Radius.circular(30))),
+        )
+      ],
+    );
+  }
+}
+
+class LocalMusicPlayer extends StatelessWidget {
+  const LocalMusicPlayer({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Container(
+            height: MediaQuery.of(context).size.height / 10,
+            width: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(
+                color: Provider.of<SettingBrain>(context).textColour,
+                borderRadius: BorderRadius.all(Radius.circular(30)))),
+        Container(
+            height: MediaQuery.of(context).size.height / 20,
+            width: MediaQuery.of(context).size.height / 20,
+            child: Icon(
+              Icons.play_arrow,
+            ),
+            decoration: BoxDecoration(
+                color: Provider.of<SettingBrain>(context).todolist_tile,
+                borderRadius: BorderRadius.all(Radius.circular(30)))),
+        Container(
+            height: MediaQuery.of(context).size.height / 20,
+            width: MediaQuery.of(context).size.height / 20,
+            child: Icon(
+              Icons.play_arrow,
+            ),
+            decoration: BoxDecoration(
+                color: Provider.of<SettingBrain>(context).todolist_tile,
+                borderRadius: BorderRadius.all(Radius.circular(30)))),
+        Container(
+            height: MediaQuery.of(context).size.height / 20,
+            width: MediaQuery.of(context).size.height / 20,
+            child: Icon(
+              Icons.play_arrow,
+            ),
+            decoration: BoxDecoration(
+                color: Provider.of<SettingBrain>(context).todolist_tile,
+                borderRadius: BorderRadius.all(Radius.circular(30)))),
+      ],
     );
   }
 }
