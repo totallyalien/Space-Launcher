@@ -3,6 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:retrolauncher/Setting.dart';
 
 class Calculator extends StatefulWidget {
+  const Calculator({super.key});
+
+  @override
   _CalculatorState createState() => _CalculatorState();
 }
 
@@ -23,9 +26,7 @@ class _CalculatorState extends State<Calculator> {
       //check for Double Negation
       if (editQuestion[i] == '-' && editQuestion[i + 1] == '-') {
         // 1--2 -> 1+2
-        editQuestion = editQuestion.substring(0, i) +
-            '+' +
-            editQuestion.substring(i + 2, editQuestion.length);
+        editQuestion = '${editQuestion.substring(0, i)}+${editQuestion.substring(i + 2, editQuestion.length)}';
       }
     }
 
@@ -33,20 +34,18 @@ class _CalculatorState extends State<Calculator> {
       //check for double plus
       if (editQuestion[i] == '+' && editQuestion[i - 1] == '+') {
         // 1+++2 -> 1+0+0+0+2
-        editQuestion = editQuestion.substring(0, i) +
-            '0' +
-            editQuestion.substring(i, editQuestion.length);
+        editQuestion = '${editQuestion.substring(0, i)}0${editQuestion.substring(i, editQuestion.length)}';
       }
     }
 
     // +9 becomes 0+9
     if (editQuestion[0] == '+') {
-      editQuestion = '0' + editQuestion;
+      editQuestion = '0$editQuestion';
     }
 
     //if the question starts with a number, add +0, this just helps with the addition functions
     if (startsWithNumber(editQuestion)) {
-      editQuestion = '0+' + editQuestion;
+      editQuestion = '0+$editQuestion';
     }
 
     //check if there's a '-' sign, execute subtraction
@@ -65,7 +64,7 @@ class _CalculatorState extends State<Calculator> {
     //this helps with multiplicativeOperation that uses split(x), there needs to be an x
     for (var i = 0; i < finalElements.length; i++) {
       if (finalElements[i].contains('/')) {
-        finalElements[i] = "1×" + finalElements[i];
+        finalElements[i] = "1×${finalElements[i]}";
       }
     }
 
@@ -106,9 +105,7 @@ class _CalculatorState extends State<Calculator> {
   void _operateSubtraction() {
     for (var i = 1; i < editQuestion.length; i++) {
       if (editQuestion[i] == '-' && !isOperator(editQuestion[i - 1])) {
-        editQuestion = editQuestion.substring(0, i) +
-            '+' +
-            editQuestion.substring(i, editQuestion.length);
+        editQuestion = '${editQuestion.substring(0, i)}+${editQuestion.substring(i, editQuestion.length)}';
         i = i + 2;
       }
     }
@@ -194,12 +191,12 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '%';
+      userQuestion = '$userQuestion%';
     });
   }
 
   void _buttonDel() {
-    if (userQuestion.length == 0) {
+    if (userQuestion.isEmpty) {
     } else {
       setState(() {
         userQuestion = userQuestion.substring(0, userQuestion.length - 1);
@@ -219,7 +216,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '7';
+      userQuestion = '${userQuestion}7';
     });
   }
 
@@ -228,7 +225,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '8';
+      userQuestion = '${userQuestion}8';
     });
   }
 
@@ -237,7 +234,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '9';
+      userQuestion = '${userQuestion}9';
     });
   }
 
@@ -246,7 +243,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '6';
+      userQuestion = '${userQuestion}6';
     });
   }
 
@@ -255,7 +252,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '5';
+      userQuestion = '${userQuestion}5';
     });
   }
 
@@ -264,7 +261,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '4';
+      userQuestion = '${userQuestion}4';
     });
   }
 
@@ -273,7 +270,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '3';
+      userQuestion = '${userQuestion}3';
     });
   }
 
@@ -282,7 +279,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '2';
+      userQuestion = '${userQuestion}2';
     });
   }
 
@@ -291,7 +288,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '1';
+      userQuestion = '${userQuestion}1';
     });
   }
 
@@ -300,7 +297,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '0';
+      userQuestion = '${userQuestion}0';
     });
   }
 
@@ -309,7 +306,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '.';
+      userQuestion = '$userQuestion.';
     });
   }
 
@@ -318,7 +315,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + '/';
+      userQuestion = '$userQuestion/';
     });
   }
 
@@ -326,9 +323,9 @@ class _CalculatorState extends State<Calculator> {
     setState(() {
       if (displayAnswer.toString() != '') {
         _buttonClr();
-        userQuestion = 'Ans' + '×';
+        userQuestion = 'Ans' '×';
       } else {
-        userQuestion = userQuestion + '×';
+        userQuestion = '$userQuestion×';
       }
     });
   }
@@ -337,9 +334,9 @@ class _CalculatorState extends State<Calculator> {
     setState(() {
       if (displayAnswer.toString() != '') {
         _buttonClr();
-        userQuestion = 'Ans' + '-';
+        userQuestion = 'Ans' '-';
       } else {
-        userQuestion = userQuestion + '-';
+        userQuestion = '$userQuestion-';
       }
     });
   }
@@ -348,9 +345,9 @@ class _CalculatorState extends State<Calculator> {
     setState(() {
       if (displayAnswer.toString() != '') {
         _buttonClr();
-        userQuestion = 'Ans' + '+';
+        userQuestion = 'Ans' '+';
       } else {
-        userQuestion = userQuestion + '+';
+        userQuestion = '$userQuestion+';
       }
     });
   }
@@ -360,7 +357,7 @@ class _CalculatorState extends State<Calculator> {
       if (displayAnswer.toString() != '') {
         _buttonClr();
       }
-      userQuestion = userQuestion + 'Ans';
+      userQuestion = '${userQuestion}Ans';
     });
   }
 
@@ -385,7 +382,7 @@ class _CalculatorState extends State<Calculator> {
             child: Container(
               alignment: Alignment.topLeft,
               child: Padding(
-                padding: EdgeInsets.only(top: 10, left: 20, right: 20),
+                padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
                 child: Text(
                   userQuestion,
                   style: TextStyle(
@@ -398,7 +395,7 @@ class _CalculatorState extends State<Calculator> {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.only(right: 20),
+              padding: const EdgeInsets.only(right: 20),
               alignment: Alignment.bottomRight,
               child: Text(
                 displayAnswer.toString(),
@@ -410,19 +407,19 @@ class _CalculatorState extends State<Calculator> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 4, right: 4),
+              padding: const EdgeInsets.only(left: 4, right: 4),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonDel,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
                             color: Colors.red[400],
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 'DEL',
                                 style: TextStyle(
@@ -436,14 +433,14 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonClr,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Container(
                             color: Colors.green[400],
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 'C',
                                 style: TextStyle(
@@ -457,7 +454,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonPercent,
                         child: ClipRRect(
@@ -465,7 +462,7 @@ class _CalculatorState extends State<Calculator> {
                           child: Container(
                             color: Provider.of<SettingBrain>(context)
                                 .todolist_tile,
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '%',
                                 style: TextStyle(
@@ -479,7 +476,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonDivide,
                         child: ClipRRect(
@@ -487,7 +484,7 @@ class _CalculatorState extends State<Calculator> {
                           child: Container(
                             color: Provider.of<SettingBrain>(context)
                                 .todolist_tile,
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '÷',
                                 style: TextStyle(
@@ -505,12 +502,12 @@ class _CalculatorState extends State<Calculator> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 4, right: 4),
+              padding: const EdgeInsets.only(left: 4, right: 4),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button7,
                         child: ClipRRect(
@@ -534,7 +531,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button8,
                         child: ClipRRect(
@@ -558,7 +555,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button9,
                         child: ClipRRect(
@@ -582,7 +579,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonMultiply,
                         child: ClipRRect(
@@ -590,7 +587,7 @@ class _CalculatorState extends State<Calculator> {
                           child: Container(
                             color: Provider.of<SettingBrain>(context)
                                 .todolist_button,
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '×',
                                 style: TextStyle(
@@ -608,12 +605,12 @@ class _CalculatorState extends State<Calculator> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 4, right: 4),
+              padding: const EdgeInsets.only(left: 4, right: 4),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button4,
                         child: ClipRRect(
@@ -637,7 +634,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button5,
                         child: ClipRRect(
@@ -661,7 +658,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button6,
                         child: ClipRRect(
@@ -685,7 +682,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonSubtract,
                         child: ClipRRect(
@@ -693,7 +690,7 @@ class _CalculatorState extends State<Calculator> {
                           child: Container(
                             color: Provider.of<SettingBrain>(context)
                                 .todolist_button,
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '-',
                                 style: TextStyle(
@@ -711,12 +708,12 @@ class _CalculatorState extends State<Calculator> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 4, right: 4),
+              padding: const EdgeInsets.only(left: 4, right: 4),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button1,
                         child: ClipRRect(
@@ -740,7 +737,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button2,
                         child: ClipRRect(
@@ -764,7 +761,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button3,
                         child: ClipRRect(
@@ -788,7 +785,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonAddition,
                         child: ClipRRect(
@@ -796,7 +793,7 @@ class _CalculatorState extends State<Calculator> {
                           child: Container(
                             color: Provider.of<SettingBrain>(context)
                                 .todolist_button,
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '+',
                                 style: TextStyle(
@@ -814,12 +811,12 @@ class _CalculatorState extends State<Calculator> {
           ),
           Expanded(
             child: Padding(
-              padding: EdgeInsets.only(left: 4, right: 4),
+              padding: const EdgeInsets.only(left: 4, right: 4),
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _button0,
                         child: ClipRRect(
@@ -843,7 +840,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonDecimal,
                         child: ClipRRect(
@@ -867,7 +864,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonAns,
                         child: ClipRRect(
@@ -891,7 +888,7 @@ class _CalculatorState extends State<Calculator> {
                   ),
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.all(1),
+                      padding: const EdgeInsets.all(1),
                       child: GestureDetector(
                         onTap: _buttonEqual,
                         child: ClipRRect(
@@ -899,7 +896,7 @@ class _CalculatorState extends State<Calculator> {
                           child: Container(
                             color: Provider.of<SettingBrain>(context)
                                 .todolist_tile,
-                            child: Center(
+                            child: const Center(
                               child: Text(
                                 '=',
                                 style: TextStyle(

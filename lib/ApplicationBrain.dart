@@ -1,3 +1,4 @@
+import 'package:app_usage/app_usage.dart';
 import 'package:flutter/material.dart';
 import 'package:device_apps/device_apps.dart';
 
@@ -17,9 +18,26 @@ class ApplicationBrain extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  void getUsageStats() async {
+    try {
+      DateTime endDate = DateTime.now();
+      DateTime startDate = endDate.subtract(const Duration(hours: 1));
+      List<AppUsageInfo> infoList =
+          await AppUsage().getAppUsage(startDate, endDate);
+      // setState(() => _infos = infoList);
+
+      for (var info in infoList) {
+        print(info.toString());
+      }
+    } on AppUsageException catch (exception) {
+      print(exception);
+    }
+  }
+
   void search_app() {
     List temp = [];
-    apps.forEach((element) {
+    for (var element in apps) {
       if (element.appName
           .toString()
           .toLowerCase()
@@ -27,7 +45,7 @@ class ApplicationBrain extends ChangeNotifier {
         print(element);
         temp.add(element);
       }
-    });
+    }
     search_apps = temp;
     notifyListeners();
   }

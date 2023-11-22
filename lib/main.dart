@@ -6,11 +6,10 @@ import 'package:retrolauncher/Setting.dart';
 import 'package:flutter/services.dart';
 import 'package:retrolauncher/TimerBrain.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:retrolauncher/data/database.dart';
 
 void main() async {
   await Hive.initFlutter();
-
-  // open a box
   var box = await Hive.openBox('mybox');
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
@@ -22,9 +21,10 @@ void main() async {
         providers: [
           ChangeNotifierProvider(create: (context) => SettingBrain()),
           ChangeNotifierProvider(create: (context) => ApplicationBrain()),
-          ChangeNotifierProvider(create: (context) => TimerBrain())
+          ChangeNotifierProvider(create: (context) => TimerBrain()),
+          ChangeNotifierProvider(create: (context) => ToDoDataBase())
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
             debugShowCheckedModeBanner: false, home: HomeScreen())));
   });
 }

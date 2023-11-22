@@ -1,5 +1,4 @@
-import 'dart:async';
-
+import 'package:fluttercontactpicker/fluttercontactpicker.dart';
 import 'package:device_apps/device_apps.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -8,6 +7,7 @@ import 'package:retrolauncher/ApplicationBrain.dart';
 import 'package:retrolauncher/Setting.dart';
 import 'package:retrolauncher/SettingsUi.dart';
 import 'package:retrolauncher/TimerBrain.dart';
+import 'package:retrolauncher/data/database.dart';
 import 'package:retrolauncher/pages/Calculator.dart';
 import 'package:retrolauncher/pages/TodoList.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -23,9 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    Provider.of<ToDoDataBase>(context, listen: false).loadData();
     Provider.of<TimerBrain>(context, listen: false).currentTime();
     Provider.of<ApplicationBrain>(context, listen: false).initApp();
-
+    Provider.of<ApplicationBrain>(context, listen: false).getUsageStats();
     super.initState();
   }
 
@@ -33,180 +34,263 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     double kh = MediaQuery.of(context).size.height;
     double kw = MediaQuery.of(context).size.width;
-    return SafeArea(
-      maintainBottomViewPadding: true,
-      child: PageView(
-        physics: CustomPageViewScrollPhysics(),
-        children: [
-          SafeArea(
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Container(
-                      margin: EdgeInsets.all(15),
-                      padding: EdgeInsets.all(20),
-                      height: MediaQuery.of(context).size.height / 2.5,
-                      decoration: BoxDecoration(
-                          color: Provider.of<SettingBrain>(context)
-                              .todolistBackground,
-                          borderRadius: BorderRadius.all(Radius.circular(30))),
-                      child: PageView(
-                        children: [
-                          ToDoList(),
-                          Calculator(),
-                        ],
-                      )),
-                  Container(
-                      margin: EdgeInsets.all(5),
-                      padding: EdgeInsets.all(10),
-                      height: MediaQuery.of(context).size.height / 2.5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              child: LocalMusicPlayer(),
-                              decoration: BoxDecoration(
-                                  color: Provider.of<SettingBrain>(context)
-                                      .todolistBackground,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30))),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.width / 50,
-                          ),
-                          Expanded(
-                            child: Container(
-                              child: LocalContactWidget(),
-                              // height: MediaQuery.of(context).size.height,
-                              // width: MediaQuery.of(context).size.width / 3,
-                              decoration: BoxDecoration(
-                                  color: Provider.of<SettingBrain>(context)
-                                      .todolistBackground,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30))),
-                            ),
-                          ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.width / 50,
-                          ),
-                          Expanded(
-                            child: Container(
-                              // height: MediaQuery.of(context).size.height,
-                              // width: MediaQuery.of(context).size.width / 3,
-                              decoration: BoxDecoration(
-                                  color: Provider.of<SettingBrain>(context)
-                                      .todolistBackground,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30))),
-                            ),
-                          )
-                        ],
-                      ))
-                ],
-              ),
-            ),
-          ),
-          HomePageView(context, kh, kw),
-          GestureDetector(
-            onLongPress: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => SettingPage()));
-            },
-            child: Scaffold(
-              backgroundColor: Provider.of<SettingBrain>(context).appColour,
-              body: Container(
-                height: kh,
-                width: kw,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: CustomSearchBox(context),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: Provider.of<ApplicationBrain>(context)
-                              .search_apps
-                              .length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              margin: EdgeInsets.all(kh / 100),
-                              child: GestureDetector(
-                                onTap: () {
-                                  Provider.of<ApplicationBrain>(context,
-                                          listen: false)
-                                      .appOpen(index, 2);
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(150)),
-                                          color:
-                                              Provider.of<SettingBrain>(context)
-                                                  .textColour),
-                                      padding: EdgeInsets.all(kh / 200),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(50)),
-                                        child: Image.memory(
-                                          Provider.of<ApplicationBrain>(context)
-                                                      .search_apps[index]
-                                                  is ApplicationWithIcon
-                                              ? Provider.of<ApplicationBrain>(
-                                                      context)
-                                                  .search_apps[index]
-                                                  .icon
-                                              : null,
-                                          height: kh / 40,
-                                          gaplessPlayback: true,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: kw / 20,
-                                    ),
-                                    Container(
-                                      width: kh / 5,
-                                      child: Text(
-                                        Provider.of<ApplicationBrain>(context)
-                                            .search_apps[index]
-                                            .appName,
-                                        overflow: TextOverflow.fade,
-                                        style: GoogleFonts.poppins(
-                                            fontSize: kh / 55,
-                                            color: Provider.of<SettingBrain>(
-                                                    context)
-                                                .textColour),
-                                      ),
-                                    ),
-                                  ],
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          maintainBottomViewPadding: true,
+          child: PageView(
+            physics: const CustomPageViewScrollPhysics(),
+            children: [
+              SafeArea(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                          margin: const EdgeInsets.all(15),
+                          padding: const EdgeInsets.all(20),
+                          height: MediaQuery.of(context).size.height / 2.5,
+                          decoration: BoxDecoration(
+                              color: Provider.of<SettingBrain>(context)
+                                  .todolistBackground,
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(30))),
+                          child: PageView(
+                            children: const [
+                              ToDoList(),
+                              Calculator(),
+                            ],
+                          )),
+                      Container(
+                          margin: const EdgeInsets.all(5),
+                          padding: const EdgeInsets.all(10),
+                          height: MediaQuery.of(context).size.height / 2.5,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Provider.of<SettingBrain>(context)
+                                          .todolistBackground,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(30))),
+                                  child: const LocalMusicPlayer(),
                                 ),
                               ),
-                            );
-                          }),
-                    ),
-                    SizedBox(
-                      height: kh / 20,
-                    ),
-                  ],
+                              SizedBox(
+                                height: MediaQuery.of(context).size.width / 50,
+                              ),
+                              // Expanded(
+                              //   child: Container(
+                              //     decoration: BoxDecoration(
+                              //         color: Provider.of<SettingBrain>(context)
+                              //             .todolistBackground,
+                              //         borderRadius: const BorderRadius.all(
+                              //             Radius.circular(30))),
+                              //     child: LocalContactWidget(),
+                              //   ),
+                              // ),
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: Provider.of<SettingBrain>(context)
+                                          .todolistBackground,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(30))),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                          child: Container(
+                                        height: kh,
+                                        margin: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(30),
+                                                bottomLeft:
+                                                    Radius.circular(30))),
+                                        child: Center(
+                                          child: Text(
+                                            "5 💤",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      )),
+                                      Expanded(
+                                          child: Container(
+                                        height: kh,
+                                        margin: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(0))),
+                                        child: Center(
+                                          child: Text(
+                                            "10 💤",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      )),
+                                      Expanded(
+                                          child: Container(
+                                        height: kh,
+                                        margin: EdgeInsets.all(2),
+                                        decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(30),
+                                                bottomRight:
+                                                    Radius.circular(30))),
+                                        child: Center(
+                                          child: Text(
+                                            "15 💤",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      )),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                height: MediaQuery.of(context).size.width / 50,
+                              ),
+                              Expanded(
+                                child: Container(
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                      color: Provider.of<SettingBrain>(context)
+                                          .todolistBackground,
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(30))),
+                                  child: LocalContactWidget(),
+                                ),
+                              )
+                            ],
+                          ))
+                    ],
+                  ),
                 ),
               ),
-            ),
-          )
-        ],
+              HomePageView(context, kh, kw),
+              GestureDetector(
+                onLongPress: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SettingPage()));
+                },
+                child: Scaffold(
+                  backgroundColor: Provider.of<SettingBrain>(context).appColour,
+                  body: SizedBox(
+                    height: kh,
+                    width: kw,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SafeArea(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: CustomSearchBox(context),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: Provider.of<ApplicationBrain>(context)
+                                  .search_apps
+                                  .length,
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  margin: EdgeInsets.all(kh / 100),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Provider.of<ApplicationBrain>(context,
+                                              listen: false)
+                                          .appOpen(index, 2);
+                                    },
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                      Radius.circular(150)),
+                                              color: Provider.of<SettingBrain>(
+                                                      context)
+                                                  .textColour),
+                                          padding: EdgeInsets.all(kh / 200),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(50)),
+                                            child: Image.memory(
+                                              Provider.of<ApplicationBrain>(
+                                                              context)
+                                                          .search_apps[index]
+                                                      is ApplicationWithIcon
+                                                  ? Provider.of<
+                                                              ApplicationBrain>(
+                                                          context)
+                                                      .search_apps[index]
+                                                      .icon
+                                                  : null,
+                                              height: kh / 40,
+                                              gaplessPlayback: true,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: kw / 20,
+                                        ),
+                                        SizedBox(
+                                          width: kh / 5,
+                                          child: Text(
+                                            Provider.of<ApplicationBrain>(
+                                                    context)
+                                                .search_apps[index]
+                                                .appName,
+                                            overflow: TextOverflow.fade,
+                                            style: GoogleFonts.poppins(
+                                                fontSize: kh / 55,
+                                                color:
+                                                    Provider.of<SettingBrain>(
+                                                            context)
+                                                        .textColour),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                        ),
+                        SizedBox(
+                          height: kh / 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -234,8 +318,12 @@ class _HomeScreenState extends State<HomeScreen> {
   GestureDetector HomePageView(BuildContext context, double kh, double kw) {
     return GestureDetector(
       onLongPress: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SettingPage()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => const SettingPage()));
+      },
+      onDoubleTap: () {
+        print("double tap tap");
+        Provider.of<SettingBrain>(context, listen: false).turnoff();
       },
       child: Scaffold(
         backgroundColor: Provider.of<SettingBrain>(context).appColour,
@@ -275,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   GridView GridviewDisplay(BuildContext context, double kh, double kw) {
     return GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 3, // number of items in each row
           mainAxisSpacing: 30.0, // spacing between rows
           crossAxisSpacing: 8.0, // spacing between columns
@@ -335,8 +423,8 @@ class _HomeScreenState extends State<HomeScreen> {
         });
   }
 
-  Container customTimeWidget(double kw, double kh, BuildContext context) {
-    return Container(
+  SizedBox customTimeWidget(double kw, double kh, BuildContext context) {
+    return SizedBox(
       width: kw,
       height: kh / 8,
       child: Center(
@@ -351,8 +439,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Container CustomAppname(BuildContext context, int index, double kh) {
-    return Container(
+  SizedBox CustomAppname(BuildContext context, int index, double kh) {
+    return SizedBox(
       width: kh / 5,
       child: Text(
         Provider.of<ApplicationBrain>(context).apps[index].appName,
@@ -372,43 +460,77 @@ class LocalContactWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment:
-          MainAxisAlignment.spaceEvenly,
-      children: [
-        Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(30))),
-        ),
-        Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(30))),
-        ),
-        Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(30))),
-        ),
-        Container(
-          height: 50,
-          width: 50,
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                  Radius.circular(30))),
-        )
-      ],
+    return ListView.builder(
+      reverse: true,
+      padding: EdgeInsets.all(8),
+      scrollDirection: Axis.horizontal,
+      itemCount: Provider.of<ToDoDataBase>(context).FavoriteList.length,
+      itemBuilder: (context, item) {
+        return Provider.of<ToDoDataBase>(context).FavoriteList[item][0] == "ADD"
+            ? GestureDetector(
+                onTap: () async {
+                  if (await ContactPickerPlatform.instance.hasPermission() ==
+                      false) {
+                    await ContactPickerPlatform.instance
+                        .requestPermission(force: true);
+                  }
+                  final FullContact contact =
+                      await FlutterContactPicker.pickFullContact();
+
+                  print("number= ${contact.phones[1].number}");
+
+                  Provider.of<ToDoDataBase>(context, listen: false).addContacts(
+                      contact.name!.firstName.toString(),
+                      contact.phones[1].number.toString());
+                  Provider.of<ToDoDataBase>(context, listen: false)
+                      .updateDataBase();
+                },
+                child: Container(
+                  margin: EdgeInsets.all(8),
+                  height: 40,
+                  width: 50,
+                  child: Icon(Icons.add),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                ),
+              )
+            : GestureDetector(
+                onTap: () {
+                  Provider.of<ToDoDataBase>(context, listen: false)
+                      .makingPhoneCall(
+                          Provider.of<ToDoDataBase>(context, listen: false)
+                              .FavoriteList[item][1]);
+                },
+                onLongPress: () {
+                  Provider.of<ToDoDataBase>(context, listen: false)
+                      .deleteContact(context);
+                },
+                child: Container(
+                  margin: EdgeInsets.all(8),
+                  height: 40,
+                  width: 50,
+                  padding: EdgeInsets.all(8),
+                  child: Center(
+                    child: Material(
+                      child: Center(
+                        child: Text(
+                          Provider.of<ToDoDataBase>(context)
+                              .FavoriteList[item][0]
+                              .toString()
+                              .substring(0, 2),
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                  decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(30))),
+                ),
+              );
+      },
     );
   }
 }
@@ -428,34 +550,34 @@ class LocalMusicPlayer extends StatelessWidget {
             width: MediaQuery.of(context).size.height / 10,
             decoration: BoxDecoration(
                 color: Provider.of<SettingBrain>(context).textColour,
-                borderRadius: BorderRadius.all(Radius.circular(30)))),
+                borderRadius: const BorderRadius.all(Radius.circular(30)))),
         Container(
             height: MediaQuery.of(context).size.height / 20,
             width: MediaQuery.of(context).size.height / 20,
-            child: Icon(
-              Icons.play_arrow,
-            ),
             decoration: BoxDecoration(
                 color: Provider.of<SettingBrain>(context).todolist_tile,
-                borderRadius: BorderRadius.all(Radius.circular(30)))),
+                borderRadius: const BorderRadius.all(Radius.circular(30))),
+            child: const Icon(
+              Icons.play_arrow,
+            )),
         Container(
             height: MediaQuery.of(context).size.height / 20,
             width: MediaQuery.of(context).size.height / 20,
-            child: Icon(
-              Icons.play_arrow,
-            ),
             decoration: BoxDecoration(
                 color: Provider.of<SettingBrain>(context).todolist_tile,
-                borderRadius: BorderRadius.all(Radius.circular(30)))),
+                borderRadius: const BorderRadius.all(Radius.circular(30))),
+            child: const Icon(
+              Icons.play_arrow,
+            )),
         Container(
             height: MediaQuery.of(context).size.height / 20,
             width: MediaQuery.of(context).size.height / 20,
-            child: Icon(
-              Icons.play_arrow,
-            ),
             decoration: BoxDecoration(
                 color: Provider.of<SettingBrain>(context).todolist_tile,
-                borderRadius: BorderRadius.all(Radius.circular(30)))),
+                borderRadius: const BorderRadius.all(Radius.circular(30))),
+            child: const Icon(
+              Icons.play_arrow,
+            )),
       ],
     );
   }
@@ -464,11 +586,11 @@ class LocalMusicPlayer extends StatelessWidget {
 Container CustomAppicon(double kh, BuildContext context, int index) {
   return Container(
     decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(150)),
+        borderRadius: const BorderRadius.all(Radius.circular(150)),
         color: Provider.of<SettingBrain>(context).textColour),
     padding: EdgeInsets.all(kh / 200),
     child: ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(50)),
+      borderRadius: const BorderRadius.all(Radius.circular(50)),
       child: Image.memory(
         Provider.of<ApplicationBrain>(context).apps[index]
                 is ApplicationWithIcon
@@ -484,11 +606,11 @@ Container CustomAppicon(double kh, BuildContext context, int index) {
 Container CustomAppiconGridView(double kh, BuildContext context, int index) {
   return Container(
     decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(150)),
+        borderRadius: const BorderRadius.all(Radius.circular(150)),
         color: Provider.of<SettingBrain>(context).textColour),
     padding: EdgeInsets.all(kh / 200),
     child: ClipRRect(
-      borderRadius: BorderRadius.all(Radius.circular(50)),
+      borderRadius: const BorderRadius.all(Radius.circular(50)),
       child: Image.memory(
         Provider.of<ApplicationBrain>(context).apps[index]
                 is ApplicationWithIcon
@@ -504,6 +626,7 @@ Container CustomAppiconGridView(double kh, BuildContext context, int index) {
 Container CustomAppnameGridView(BuildContext context, int index, double kh) {
   return Container(
     width: kh / 5,
+    alignment: Alignment.center,
     child: Text(
       Provider.of<ApplicationBrain>(context).apps[index].appName,
       overflow: TextOverflow.fade,
@@ -512,7 +635,6 @@ Container CustomAppnameGridView(BuildContext context, int index, double kh) {
           fontSize: kh / 65,
           color: Provider.of<SettingBrain>(context).textColour),
     ),
-    alignment: Alignment.center,
   );
 }
 

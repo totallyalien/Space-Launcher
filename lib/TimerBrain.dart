@@ -13,6 +13,6 @@ class TimerBrain extends ChangeNotifier {
 
   void currentTime() {
     _getCurrentTime();
-    Timer.periodic(Duration(days: 1), (Timer t) => _getCurrentTime());
+    Timer.periodic(const Duration(days: 1), (Timer t) => _getCurrentTime());
   }
 }

@@ -17,6 +17,7 @@ class _ToDoListState extends State<ToDoList> {
   // reference the hive box
   final _myBox = Hive.box('mybox');
   ToDoDataBase db = ToDoDataBase();
+  
 
   @override
   void initState() {

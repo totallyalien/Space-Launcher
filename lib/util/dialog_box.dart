@@ -22,7 +22,7 @@ class DialogBox extends StatelessWidget {
       backgroundColor: Provider.of<SettingBrain>(context).todolist_tile,
       content: Container(
         decoration:
-            BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
+            const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(20))),
         height: 120,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -30,11 +30,11 @@ class DialogBox extends StatelessWidget {
             // get user input
             TextField(
               controller: controller,
-              style: TextStyle(color: Colors.white),
-              decoration: InputDecoration(
+              style: const TextStyle(color: Colors.black),
+              decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   hintText: "Add a new task",
-                  hintStyle: TextStyle(color: Colors.white)),
+                  hintStyle: TextStyle(color: Colors.black)),
             ),
 
             // buttons -> save + cancel
