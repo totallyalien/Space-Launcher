@@ -25,7 +25,6 @@ Space Launcher is a Flutter-based launcher for Android devices that provides a c
 | ![Screenshot_20231208_102838](https://github.com/totallyalien/Android-Launcher/assets/97169836/12a5eb82-c7a4-49e2-9ac2-981290c2a36a) | ![Screenshot_20231208_102843](https://github.com/totallyalien/Android-Launcher/assets/97169836/0f45d119-fba1-409e-a734-abfdd5961394) |
 
 
-Include screenshots or GIFs to showcase the UI and functionality of your Android launcher.
 
 ## Getting Started
 
