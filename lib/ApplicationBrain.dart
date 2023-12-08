@@ -5,7 +5,9 @@ import 'package:device_apps/device_apps.dart';
 class ApplicationBrain extends ChangeNotifier {
   List apps = [];
   List search_apps = [];
+  List<AppUsageInfo> infoList = [];
   TextEditingController searchField = TextEditingController();
+  List Usage = [];
 
   Future<void> initApp() async {
     apps = await DeviceApps.getInstalledApplications(
@@ -18,21 +20,31 @@ class ApplicationBrain extends ChangeNotifier {
     notifyListeners();
   }
 
-
-  void getUsageStats() async {
+  Future<void> getUsageStats() async {
     try {
       DateTime endDate = DateTime.now();
-      DateTime startDate = endDate.subtract(const Duration(hours: 1));
-      List<AppUsageInfo> infoList =
-          await AppUsage().getAppUsage(startDate, endDate);
-      // setState(() => _infos = infoList);
+      DateTime startDate =
+          DateTime(endDate.year, endDate.month, endDate.day - 1);
+      infoList = await AppUsage().getAppUsage(startDate, endDate);
 
+      infoList.sort((a, b) => b.usage.inMinutes.compareTo(a.usage.inMinutes));
       for (var info in infoList) {
-        print(info.toString());
+        if (info.appName.toString() != 'retrolauncher' &&
+            info.appName != 'android' &&
+            info.appName != 'india' &&
+            info.appName != 'launcher' &&
+            info.appName != 'telephonyui' &&
+            info.appName != 'incallui') {
+          Usage.add([info.appName, info.usage.inMinutes, info.packageName]);
+        }
+        print(info.appName.toString() + info.usage.inMinutes.toString());
       }
+      print(Usage);
     } on AppUsageException catch (exception) {
       print(exception);
     }
+    apps = apps;
+    notifyListeners();
   }
 
   void search_app() {
@@ -52,7 +64,7 @@ class ApplicationBrain extends ChangeNotifier {
 
   void appOpen(Index, type) {
     if (type == 1) {
-      DeviceApps.openApp(apps[Index].packageName);
+      DeviceApps.openApp(Usage[Index][2]);
     } else {
       DeviceApps.openApp(search_apps[Index].packageName);
     }

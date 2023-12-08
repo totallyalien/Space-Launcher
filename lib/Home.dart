@@ -11,6 +11,7 @@ import 'package:retrolauncher/data/database.dart';
 import 'package:retrolauncher/pages/Calculator.dart';
 import 'package:retrolauncher/pages/TodoList.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:retrolauncher/sleeptimer/background.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,272 +24,290 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    Provider.of<ToDoDataBase>(context, listen: false).loadData();
+    if (Provider.of<ToDoDataBase>(context, listen: false)
+            .myBox
+            .get("CONTACT") ==
+        null) {
+      Provider.of<ToDoDataBase>(context, listen: false).updateDataBase();
+    } else {
+      // there already exists data
+      Provider.of<ToDoDataBase>(context, listen: false).loadData();
+    }
     Provider.of<TimerBrain>(context, listen: false).currentTime();
     Provider.of<ApplicationBrain>(context, listen: false).initApp();
     Provider.of<ApplicationBrain>(context, listen: false).getUsageStats();
     super.initState();
   }
 
+  final PageController _pageController = PageController(initialPage: 1);
+
   @override
   Widget build(BuildContext context) {
     double kh = MediaQuery.of(context).size.height;
     double kw = MediaQuery.of(context).size.width;
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.black,
-        body: SafeArea(
-          maintainBottomViewPadding: true,
-          child: PageView(
-            physics: const CustomPageViewScrollPhysics(),
-            children: [
-              SafeArea(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                          margin: const EdgeInsets.all(15),
-                          padding: const EdgeInsets.all(20),
-                          height: MediaQuery.of(context).size.height / 2.5,
-                          decoration: BoxDecoration(
-                              color: Provider.of<SettingBrain>(context)
-                                  .todolistBackground,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(30))),
-                          child: PageView(
-                            children: const [
-                              ToDoList(),
-                              Calculator(),
-                            ],
-                          )),
-                      Container(
-                          margin: const EdgeInsets.all(5),
-                          padding: const EdgeInsets.all(10),
-                          height: MediaQuery.of(context).size.height / 2.5,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Provider.of<SettingBrain>(context)
-                                          .todolistBackground,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(30))),
-                                  child: const LocalMusicPlayer(),
-                                ),
-                              ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.width / 50,
-                              ),
-                              // Expanded(
-                              //   child: Container(
-                              //     decoration: BoxDecoration(
-                              //         color: Provider.of<SettingBrain>(context)
-                              //             .todolistBackground,
-                              //         borderRadius: const BorderRadius.all(
-                              //             Radius.circular(30))),
-                              //     child: LocalContactWidget(),
-                              //   ),
-                              // ),
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: Provider.of<SettingBrain>(context)
-                                          .todolistBackground,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(30))),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                          child: Container(
-                                        height: kh,
-                                        margin: EdgeInsets.all(2),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                                topLeft: Radius.circular(30),
-                                                bottomLeft:
-                                                    Radius.circular(30))),
-                                        child: Center(
-                                          child: Text(
-                                            "5 💤",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      )),
-                                      Expanded(
-                                          child: Container(
-                                        height: kh,
-                                        margin: EdgeInsets.all(2),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(0))),
-                                        child: Center(
-                                          child: Text(
-                                            "10 💤",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      )),
-                                      Expanded(
-                                          child: Container(
-                                        height: kh,
-                                        margin: EdgeInsets.all(2),
-                                        decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(30),
-                                                bottomRight:
-                                                    Radius.circular(30))),
-                                        child: Center(
-                                          child: Text(
-                                            "15 💤",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      )),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: MediaQuery.of(context).size.width / 50,
-                              ),
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                      color: Provider.of<SettingBrain>(context)
-                                          .todolistBackground,
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(30))),
-                                  child: LocalContactWidget(),
-                                ),
-                              )
-                            ],
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-              HomePageView(context, kh, kw),
-              GestureDetector(
-                onLongPress: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SettingPage()));
-                },
-                child: Scaffold(
-                  backgroundColor: Provider.of<SettingBrain>(context).appColour,
-                  body: SizedBox(
-                    height: kh,
-                    width: kw,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SafeArea(
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: CustomSearchBox(context),
+    return SafeArea(
+      maintainBottomViewPadding: true,
+      child: PageView(
+        controller: _pageController,
+        physics: const CustomPageViewScrollPhysics(),
+        children: [
+          SafeArea(
+            child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Container(
+                      margin: const EdgeInsets.all(15),
+                      padding: const EdgeInsets.all(20),
+                      height: MediaQuery.of(context).size.height / 2.5,
+                      decoration: BoxDecoration(
+                          color: Provider.of<SettingBrain>(context)
+                              .todolistBackground,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(30))),
+                      child: PageView(
+                        children: const [
+                          ToDoList(),
+                          Calculator(),
+                        ],
+                      )),
+                  Container(
+                      margin: const EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(10),
+                      height: MediaQuery.of(context).size.height / 2.0,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Provider.of<SettingBrain>(context)
+                                      .todolistBackground,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(30))),
+                              child: const LocalMusicPlayer(),
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: Provider.of<ApplicationBrain>(context)
-                                  .search_apps
-                                  .length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  margin: EdgeInsets.all(kh / 100),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Provider.of<ApplicationBrain>(context,
-                                              listen: false)
-                                          .appOpen(index, 2);
-                                    },
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  const BorderRadius.all(
-                                                      Radius.circular(150)),
-                                              color: Provider.of<SettingBrain>(
-                                                      context)
-                                                  .textColour),
-                                          padding: EdgeInsets.all(kh / 200),
-                                          child: ClipRRect(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                                    Radius.circular(50)),
-                                            child: Image.memory(
-                                              Provider.of<ApplicationBrain>(
-                                                              context)
-                                                          .search_apps[index]
-                                                      is ApplicationWithIcon
-                                                  ? Provider.of<
-                                                              ApplicationBrain>(
-                                                          context)
-                                                      .search_apps[index]
-                                                      .icon
-                                                  : null,
-                                              height: kh / 40,
-                                              gaplessPlayback: true,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: kw / 20,
-                                        ),
-                                        SizedBox(
-                                          width: kh / 5,
-                                          child: Text(
-                                            Provider.of<ApplicationBrain>(
-                                                    context)
-                                                .search_apps[index]
-                                                .appName,
-                                            overflow: TextOverflow.fade,
-                                            style: GoogleFonts.poppins(
-                                                fontSize: kh / 55,
-                                                color:
-                                                    Provider.of<SettingBrain>(
-                                                            context)
-                                                        .textColour),
-                                          ),
-                                        ),
-                                      ],
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width / 50,
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                  color: Provider.of<SettingBrain>(context)
+                                      .todolistBackground,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(30))),
+                              child: Column(
+                                children: [
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        "Sleep Timer",
+                                        style: GoogleFonts.poppins(
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white),
+                                      ),
                                     ),
                                   ),
-                                );
-                              }),
-                        ),
-                        SizedBox(
-                          height: kh / 20,
-                        ),
-                      ],
+                                  Provider.of<BackgroundBrain>(context,
+                                              listen: true)
+                                          .show
+                                      ? Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            timerbox(1),
+                                            timerbox(15),
+                                            timerbox(30),
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [Datetimerbox()],
+                                        )
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: MediaQuery.of(context).size.width / 50,
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                  color: Provider.of<SettingBrain>(context)
+                                      .todolistBackground,
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(30))),
+                              child: LocalContactWidget(),
+                            ),
+                          )
+                        ],
+                      ))
+                ],
+              ),
+            ),
+          ),
+          HomePageView(context, kh, kw),
+          GestureDetector(
+            onLongPress: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const SettingPage()));
+            },
+            child: Scaffold(
+              backgroundColor: Provider.of<SettingBrain>(context).appColour,
+              body: SizedBox(
+                height: kh,
+                width: kw,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SafeArea(
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: CustomSearchBox(context),
+                      ),
                     ),
-                  ),
+                    Expanded(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: Provider.of<ApplicationBrain>(context)
+                              .search_apps
+                              .length,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              margin: EdgeInsets.all(kh / 100),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Provider.of<ApplicationBrain>(context,
+                                          listen: false)
+                                      .appOpen(index, 2);
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(150)),
+                                          color:
+                                              Provider.of<SettingBrain>(context)
+                                                  .textColour),
+                                      padding: EdgeInsets.all(kh / 200),
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(50)),
+                                        child: Image.memory(
+                                          Provider.of<ApplicationBrain>(context)
+                                                      .search_apps[index]
+                                                  is ApplicationWithIcon
+                                              ? Provider.of<ApplicationBrain>(
+                                                      context)
+                                                  .search_apps[index]
+                                                  .icon
+                                              : null,
+                                          height: kh / 40,
+                                          gaplessPlayback: true,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: kw / 20,
+                                    ),
+                                    SizedBox(
+                                      width: kh / 5,
+                                      child: Text(
+                                        Provider.of<ApplicationBrain>(context)
+                                            .search_apps[index]
+                                            .appName,
+                                        overflow: TextOverflow.fade,
+                                        style: GoogleFonts.poppins(
+                                            fontSize: kh / 55,
+                                            color: Provider.of<SettingBrain>(
+                                                    context)
+                                                .textColour),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                    ),
+                    SizedBox(
+                      height: kh / 20,
+                    ),
+                  ],
                 ),
-              )
-            ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Expanded Datetimerbox() {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector(
+          onTap: () {
+            Provider.of<BackgroundBrain>(context, listen: false)
+                .cancelScheduledTimer();
+          },
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Material(
+                color: Colors.transparent,
+                child: Center(
+                  child: Text(
+                    "${Provider.of<BackgroundBrain>(context, listen: true).tissot}",
+                    style: GoogleFonts.poppins(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15),
+                  ),
+                )),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Expanded timerbox(int time) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: GestureDetector(
+          onTap: () {
+            Provider.of<BackgroundBrain>(context, listen: false)
+                .scheduleTimer(time);
+          },
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(10))),
+            child: Material(
+                color: Colors.transparent,
+                child: Center(
+                  child: Text(
+                    "${time}",
+                    style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                )),
           ),
         ),
       ),
@@ -411,7 +430,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  CustomAppicon(kh, context, index),
+                  // CustomAppicon(kh, context, index),
                   SizedBox(
                     width: kw / 20,
                   ),
@@ -429,10 +448,10 @@ class _HomeScreenState extends State<HomeScreen> {
       height: kh / 8,
       child: Center(
         child: Text(
-          Provider.of<TimerBrain>(context).timeString,
+          Provider.of<TimerBrain>(context).timeString.toUpperCase(),
           style: GoogleFonts.poppins(
               fontSize: kh / 40,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.bold,
               color: Provider.of<SettingBrain>(context).textColour),
         ),
       ),
@@ -441,13 +460,26 @@ class _HomeScreenState extends State<HomeScreen> {
 
   SizedBox CustomAppname(BuildContext context, int index, double kh) {
     return SizedBox(
-      width: kh / 5,
-      child: Text(
-        Provider.of<ApplicationBrain>(context).apps[index].appName,
-        overflow: TextOverflow.fade,
-        style: GoogleFonts.poppins(
-            fontSize: kh / 55,
-            color: Provider.of<SettingBrain>(context).textColour),
+      width: kh / 4,
+      child: Row(
+        children: [
+          Text(
+            "${Provider.of<ApplicationBrain>(context).Usage[index][0].toString().toUpperCase()}   ",
+            overflow: TextOverflow.fade,
+            style: GoogleFonts.poppins(
+                fontSize: kh / 55,
+                fontWeight: FontWeight.bold,
+                color: Provider.of<SettingBrain>(context).textColour),
+          ),
+          Provider.of<SettingBrain>(context, listen: false).appusage == true
+              ? Text(
+                  "${Provider.of<ApplicationBrain>(context).Usage[index][1]} min",
+                  overflow: TextOverflow.fade,
+                  style: GoogleFonts.poppins(
+                      color: Colors.white54, fontSize: kh / 75),
+                )
+              : Text("")
+        ],
       ),
     );
   }
@@ -487,7 +519,7 @@ class LocalContactWidget extends StatelessWidget {
                 },
                 child: Container(
                   margin: EdgeInsets.all(8),
-                  height: 40,
+                  height: 50,
                   width: 50,
                   child: Icon(Icons.add),
                   decoration: const BoxDecoration(
@@ -506,28 +538,45 @@ class LocalContactWidget extends StatelessWidget {
                   Provider.of<ToDoDataBase>(context, listen: false)
                       .deleteContact(context);
                 },
-                child: Container(
-                  margin: EdgeInsets.all(8),
-                  height: 40,
-                  width: 50,
-                  padding: EdgeInsets.all(8),
-                  child: Center(
-                    child: Material(
-                      child: Center(
-                        child: Text(
+                child: Material(
+                  color: Colors.transparent,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        height: 50,
+                        width: 50,
+                        padding: EdgeInsets.all(8),
+                        child: Center(
+                          child: Material(
+                            child: Center(
+                              child: Text(
+                                  Provider.of<ToDoDataBase>(context)
+                                      .FavoriteList[item][0]
+                                      .toString()
+                                      .substring(0, 3),
+                                  overflow: TextOverflow.fade,
+                                  style: GoogleFonts.poppins(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ),
+                        decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
+                      ),
+                      Text(
                           Provider.of<ToDoDataBase>(context)
                               .FavoriteList[item][0]
-                              .toString()
-                              .substring(0, 2),
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
+                              .toString(),
+                          style: GoogleFonts.poppins(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold)),
+                    ],
                   ),
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.all(Radius.circular(30))),
                 ),
               );
       },
@@ -545,63 +594,121 @@ class LocalMusicPlayer extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        Container(
-            height: MediaQuery.of(context).size.height / 10,
-            width: MediaQuery.of(context).size.height / 10,
-            decoration: BoxDecoration(
-                color: Provider.of<SettingBrain>(context).textColour,
-                borderRadius: const BorderRadius.all(Radius.circular(30)))),
-        Container(
-            height: MediaQuery.of(context).size.height / 20,
-            width: MediaQuery.of(context).size.height / 20,
-            decoration: BoxDecoration(
-                color: Provider.of<SettingBrain>(context).todolist_tile,
-                borderRadius: const BorderRadius.all(Radius.circular(30))),
-            child: const Icon(
-              Icons.play_arrow,
-            )),
-        Container(
-            height: MediaQuery.of(context).size.height / 20,
-            width: MediaQuery.of(context).size.height / 20,
-            decoration: BoxDecoration(
-                color: Provider.of<SettingBrain>(context).todolist_tile,
-                borderRadius: const BorderRadius.all(Radius.circular(30))),
-            child: const Icon(
-              Icons.play_arrow,
-            )),
-        Container(
-            height: MediaQuery.of(context).size.height / 20,
-            width: MediaQuery.of(context).size.height / 20,
-            decoration: BoxDecoration(
-                color: Provider.of<SettingBrain>(context).todolist_tile,
-                borderRadius: const BorderRadius.all(Radius.circular(30))),
-            child: const Icon(
-              Icons.play_arrow,
-            )),
+        // Container(
+        //     height: MediaQuery.of(context).size.height / 10,
+        //     width: MediaQuery.of(context).size.height / 10,
+        //     decoration: BoxDecoration(
+        //         color: Provider.of<SettingBrain>(context).textColour,
+        //         borderRadius: const BorderRadius.all(Radius.circular(30)))),
+        Expanded(
+          child: Material(
+            color: Colors.transparent,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  UsagePRogr(
+                      context,
+                      Provider.of<ApplicationBrain>(context, listen: false)
+                          .Usage[0][0],
+                      Provider.of<ApplicationBrain>(context, listen: false)
+                          .Usage[0][1],
+                      Colors.purple),
+                  UsagePRogr(
+                      context,
+                      Provider.of<ApplicationBrain>(context, listen: false)
+                          .Usage[1][0],
+                      Provider.of<ApplicationBrain>(context, listen: false)
+                          .Usage[1][1],
+                      Colors.green),
+                  UsagePRogr(
+                      context,
+                      Provider.of<ApplicationBrain>(context, listen: false)
+                          .Usage[2][0],
+                      Provider.of<ApplicationBrain>(context, listen: false)
+                          .Usage[2][1],
+                      Colors.yellow),
+                ],
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  Column UsagePRogr(BuildContext context, String name, int time, Color cll) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                name.toString(),
+                style: GoogleFonts.poppins(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  backgroundColor:
+                      Provider.of<SettingBrain>(context).todolistBackground,
+                ),
+                // style: TextStyle(
+                //   fontSize: 8,
+                //   fontWeight: FontWeight.bold,
+                //   color: Colors.white,
+                //   backgroundColor:
+                //       Provider.of<SettingBrain>(context).todolistBackground,
+                // ),
+              ),
+              Text(
+                "${time} min",
+                style: GoogleFonts.poppins(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  backgroundColor:
+                      Provider.of<SettingBrain>(context).todolistBackground,
+                ),
+              )
+            ],
+          ),
+        ),
+        LinearProgressIndicator(
+          borderRadius: BorderRadius.all(Radius.circular(30)),
+          value: time.toDouble() / 200,
+          color: cll,
+          minHeight: 5,
+          backgroundColor: Colors.white,
+        ),
       ],
     );
   }
 }
 
-Container CustomAppicon(double kh, BuildContext context, int index) {
-  return Container(
-    decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(150)),
-        color: Provider.of<SettingBrain>(context).textColour),
-    padding: EdgeInsets.all(kh / 200),
-    child: ClipRRect(
-      borderRadius: const BorderRadius.all(Radius.circular(50)),
-      child: Image.memory(
-        Provider.of<ApplicationBrain>(context).apps[index]
-                is ApplicationWithIcon
-            ? Provider.of<ApplicationBrain>(context).apps[index].icon
-            : null,
-        height: kh / 40,
-        gaplessPlayback: true,
-      ),
-    ),
-  );
-}
+// Container CustomAppicon(double kh, BuildContext context, int index) {
+//   return Container(
+//     decoration: BoxDecoration(
+//         borderRadius: const BorderRadius.all(Radius.circular(150)),
+//         color: Provider.of<SettingBrain>(context).textColour),
+//     padding: EdgeInsets.all(kh / 200),
+//     child: ClipRRect(
+//       borderRadius: const BorderRadius.all(Radius.circular(50)),
+//       child: Image.memory(
+//         Provider.of<ApplicationBrain>(context).apps[index]
+//                 is ApplicationWithIcon
+//             ? Provider.of<ApplicationBrain>(context).apps[index].icon
+//             : null,
+//         height: kh / 40,
+//         gaplessPlayback: true,
+//       ),
+//     ),
+//   );
+// }
 
 Container CustomAppiconGridView(double kh, BuildContext context, int index) {
   return Container(
@@ -632,7 +739,8 @@ Container CustomAppnameGridView(BuildContext context, int index, double kh) {
       overflow: TextOverflow.fade,
       maxLines: 1,
       style: GoogleFonts.poppins(
-          fontSize: kh / 65,
+          fontSize: kh / 75,
+          fontWeight: FontWeight.bold,
           color: Provider.of<SettingBrain>(context).textColour),
     ),
   );

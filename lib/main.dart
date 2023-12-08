@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:retrolauncher/TimerBrain.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:retrolauncher/data/database.dart';
+import 'package:retrolauncher/sleeptimer/background.dart';
 
 void main() async {
   await Hive.initFlutter();
@@ -22,9 +23,11 @@ void main() async {
           ChangeNotifierProvider(create: (context) => SettingBrain()),
           ChangeNotifierProvider(create: (context) => ApplicationBrain()),
           ChangeNotifierProvider(create: (context) => TimerBrain()),
-          ChangeNotifierProvider(create: (context) => ToDoDataBase())
+          ChangeNotifierProvider(create: (context) => ToDoDataBase()),
+          ChangeNotifierProvider(create: (context) => BackgroundBrain())
+
         ],
-        child: const MaterialApp(
+        child: MaterialApp(
             debugShowCheckedModeBanner: false, home: HomeScreen())));
   });
 }

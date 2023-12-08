@@ -72,11 +72,12 @@ class _SettingPageState extends State<SettingPage> {
               child: Column(
                 children: [
                   Container(
-                    margin:
-                        const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
+                    margin: const EdgeInsets.only(
+                        left: 15, right: 15, top: 8, bottom: 8),
                     decoration: BoxDecoration(
                         color: Provider.of<SettingBrain>(context).appColour,
-                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
                     child: SwitchListTile(
                       title: Text(
                         "Dark Mode",
@@ -93,11 +94,12 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ),
                   Container(
-                    margin:
-                        const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
+                    margin: const EdgeInsets.only(
+                        left: 15, right: 15, top: 8, bottom: 8),
                     decoration: BoxDecoration(
                         color: Provider.of<SettingBrain>(context).appColour,
-                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
                     child: SwitchListTile(
                       title: Text(
                         "GridView",
@@ -114,11 +116,12 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ),
                   Container(
-                    margin:
-                        const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
+                    margin: const EdgeInsets.only(
+                        left: 15, right: 15, top: 8, bottom: 8),
                     decoration: BoxDecoration(
                         color: Provider.of<SettingBrain>(context).appColour,
-                        borderRadius: const BorderRadius.all(Radius.circular(20))),
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
                     child: SwitchListTile(
                       title: Text(
                         "Show App usage",
@@ -126,11 +129,11 @@ class _SettingPageState extends State<SettingPage> {
                             color:
                                 Provider.of<SettingBrain>(context).textColour),
                       ),
-                      value: Provider.of<SettingBrain>(context).grid,
+                      value: Provider.of<SettingBrain>(context).appusage,
                       onChanged: (value) {
                         print(value);
                         Provider.of<SettingBrain>(context, listen: false)
-                            .GridMode();
+                            .usageMode();
                       },
                     ),
                   ),
@@ -141,48 +144,51 @@ class _SettingPageState extends State<SettingPage> {
                           left: 15, right: 15, top: 8, bottom: 8),
                       decoration: BoxDecoration(
                           color: Provider.of<SettingBrain>(context).appColour,
-                          borderRadius: const BorderRadius.all(Radius.circular(20))),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
                       child: Text(
                         "Hide App",
                         style: GoogleFonts.poppins(
                             color:
                                 Provider.of<SettingBrain>(context).textColour),
                       )),
-                  Container(
-                      width: kw,
-                      padding: const EdgeInsets.all(20),
-                      margin: const EdgeInsets.only(
-                          left: 15, right: 15, top: 8, bottom: 8),
-                      decoration: BoxDecoration(
-                          color: Provider.of<SettingBrain>(context).appColour,
-                          borderRadius: const BorderRadius.all(Radius.circular(20))),
-                      child: Text(
-                        "Select Favourite Apps",
-                        style: GoogleFonts.poppins(
-                            color:
-                                Provider.of<SettingBrain>(context).textColour),
-                      )),
-                  Container(
-                    margin:
-                        const EdgeInsets.only(left: 15, right: 15, top: 8, bottom: 8),
-                    decoration: BoxDecoration(
-                        color: Provider.of<SettingBrain>(context).appColour,
-                        borderRadius: const BorderRadius.all(Radius.circular(20))),
-                    child: SwitchListTile(
-                      title: Text(
-                        "Double tap to lock",
-                        style: GoogleFonts.poppins(
-                            color:
-                                Provider.of<SettingBrain>(context).textColour),
-                      ),
-                      value: Provider.of<SettingBrain>(context).grid,
-                      onChanged: (value) {
-                        print(value);
-                        Provider.of<SettingBrain>(context, listen: false)
-                            .GridMode();
-                      },
-                    ),
-                  ),
+                  // Container(
+                  //     width: kw,
+                  //     padding: const EdgeInsets.all(20),
+                  //     margin: const EdgeInsets.only(
+                  //         left: 15, right: 15, top: 8, bottom: 8),
+                  //     decoration: BoxDecoration(
+                  //         color: Provider.of<SettingBrain>(context).appColour,
+                  //         borderRadius:
+                  //             const BorderRadius.all(Radius.circular(20))),
+                  //     child: Text(
+                  //       "Select Favourite Apps",
+                  //       style: GoogleFonts.poppins(
+                  //           color:
+                  //               Provider.of<SettingBrain>(context).textColour),
+                  //     )),
+                  // Container(
+                  //   margin: const EdgeInsets.only(
+                  //       left: 15, right: 15, top: 8, bottom: 8),
+                  //   decoration: BoxDecoration(
+                  //       color: Provider.of<SettingBrain>(context).appColour,
+                  //       borderRadius:
+                  //           const BorderRadius.all(Radius.circular(20))),
+                  //   child: SwitchListTile(
+                  //     title: Text(
+                  //       "Double tap to lock",
+                  //       style: GoogleFonts.poppins(
+                  //           color:
+                  //               Provider.of<SettingBrain>(context).textColour),
+                  //     ),
+                  //     value: Provider.of<SettingBrain>(context).grid,
+                  //     onChanged: (value) {
+                  //       print(value);
+                  //       Provider.of<SettingBrain>(context, listen: false)
+                  //           .GridMode();
+                  //     },
+                  //   ),
+                  // ),
                 ],
               ),
             ),

@@ -1,9 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SettingBrain extends ChangeNotifier {
-  bool mode = false;
+  bool mode = true;
   bool grid = false;
   bool doubletap = false;
   bool appusage = false;
@@ -13,11 +12,12 @@ class SettingBrain extends ChangeNotifier {
   var todolist_tile = const Color.fromARGB(255, 255, 255, 255);
   var todolist_tile_text = Colors.black;
   var todolist_button = const Color.fromRGBO(250, 240, 230, 0.993);
-  var appColour = Colors.white;
-  var textColour = Colors.black;
+  var appColour = Colors.black;
+  var textColour = Colors.white;
   var textstyle = GoogleFonts.poppins;
+
   void changeMode() {
-    mode = mode ? false : true;
+    mode = mode ? true : false;
     appColour = mode ? Colors.black : Colors.white;
     textColour = mode ? Colors.white : Colors.black;
     notifyListeners();
@@ -38,8 +38,7 @@ class SettingBrain extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future turnoff() async {
-  }
+  Future turnoff() async {}
 
   void fcover() {
     if (imgTile < 7) {

@@ -47,8 +47,10 @@ dependencies:
   fluttercontactpicker: ^4.7.0
   app_usage: ^3.0.1
   device_policy_manager: ^0.0.1
-  keep_screen_on: ^3.0.0
   url_launcher: ^6.2.1
+  just_audio: ^0.9.36
+  just_audio_background: ^0.0.1-beta.11
+  audioplayers: ^5.2.1
 
 dev_dependencies:
   flutter_test:

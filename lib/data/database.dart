@@ -5,14 +5,13 @@ import 'package:provider/provider.dart';
 import 'package:retrolauncher/Setting.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class ToDoDataBase extends ChangeNotifier {
   List toDoList = [];
   List FavoriteList = [
     ["ADD", "ADD"]
   ];
   // reference our box
-  final _myBox = Hive.box('mybox');
+  final myBox = Hive.box('mybox');
 
   // run this method if this is the 1st time ever opening this app
   void createInitialData() {
@@ -22,15 +21,15 @@ class ToDoDataBase extends ChangeNotifier {
     ];
   }
 
-
   void makingPhoneCall(number) async {
-  var url = Uri.parse("tel:${number}");
-  if (await canLaunchUrl(url)) {
-    await launchUrl(url);
-  } else {
-    throw 'Could not launch $url';
+    print(number);
+    var url = Uri.parse("tel:${number}");
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
-}
 
   void deleteContact(context) {
     showCupertinoModalPopup(
@@ -101,15 +100,15 @@ class ToDoDataBase extends ChangeNotifier {
 
   // load the data from database
   void loadData() {
-    toDoList = _myBox.get("TODOLIST");
-    FavoriteList = _myBox.get("CONTACT");
+    toDoList = myBox.get("TODOLIST");
+    FavoriteList = myBox.get("CONTACT");
     notifyListeners();
   }
 
   // update the database
   void updateDataBase() {
-    _myBox.put("TODOLIST", toDoList);
-    _myBox.put("CONTACT", FavoriteList);
+    myBox.put("TODOLIST", toDoList);
+    myBox.put("CONTACT", FavoriteList);
     notifyListeners();
   }
 
