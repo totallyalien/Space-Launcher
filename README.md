@@ -38,4 +38,4 @@ Space Launcher is a Flutter-based launcher for Android devices that provides a c
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/totallyalien/your-android-launcher.git
+   git clone https://github.com/totallyalien/android-launcher.git
