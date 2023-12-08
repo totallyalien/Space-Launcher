@@ -1,8 +1,7 @@
 # Android Launcher
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![GitHub issues](https://img.shields.io/github/issues/yourusername/your-android-launcher)](https://github.com/yourusername/your-android-launcher/issues)
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/your-android-launcher)](https://github.com/yourusername/your-android-launcher/stargazers)
+
 
 ## Overview
 
@@ -16,10 +15,15 @@ Space Launcher is a Flutter-based launcher for Android devices that provides a c
 - **Search Functionality:** Quickly find apps, contacts, and more with a powerful search feature.
 
 ## Screenshots
-![Screenshot_20231208_102826](https://github.com/totallyalien/Android-Launcher/assets/97169836/a0572cb8-a9c7-4bb8-b9be-9f66d9d052ad)
-![Screenshot_20231208_102834](https://github.com/totallyalien/Android-Launcher/assets/97169836/15b6ccfd-ed40-4ae6-9f9c-2208f9139498)
-![Screenshot_20231208_102838](https://github.com/totallyalien/Android-Launcher/assets/97169836/12a5eb82-c7a4-49e2-9ac2-981290c2a36a)
-![Screenshot_20231208_102843](https://github.com/totallyalien/Android-Launcher/assets/97169836/0f45d119-fba1-409e-a734-abfdd5961394)
+
+| HomeScreen               | HomeScreen               |
+| ---------------------- | ---------------------- |
+| ![Screenshot_20231208_102826](https://github.com/totallyalien/Android-Launcher/assets/97169836/a0572cb8-a9c7-4bb8-b9be-9f66d9d052ad) | ![Screenshot_20231208_102834](https://github.com/totallyalien/Android-Launcher/assets/97169836/15b6ccfd-ed40-4ae6-9f9c-2208f9139498) |
+
+| Search Functionality               | Widgets               |
+| ---------------------- | ---------------------- |
+| ![Screenshot_20231208_102838](https://github.com/totallyalien/Android-Launcher/assets/97169836/12a5eb82-c7a4-49e2-9ac2-981290c2a36a) | ![Screenshot_20231208_102843](https://github.com/totallyalien/Android-Launcher/assets/97169836/0f45d119-fba1-409e-a734-abfdd5961394) |
+
 
 Include screenshots or GIFs to showcase the UI and functionality of your Android launcher.
 
